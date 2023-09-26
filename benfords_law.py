@@ -63,7 +63,7 @@ for i in range(len(d)):
         print(f"{i+1}: {percentage}%")
     else:
         print(f"{i+1}: {percentage}%  --- {benfords_law[i]}%")
-print("Errechnet von " + str(value_sum) + " Datenwerten.")
+print("Errechnet aus " + str(value_sum) + " Datenwerten.")
 
 if plot_data:
     y = perc
