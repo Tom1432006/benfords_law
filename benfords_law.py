@@ -8,7 +8,7 @@ parser.add_argument("-d", "--data", required=True)
 parser.add_argument("-s", "--starting_row", default=1)
 parser.add_argument("-c", "--collumn", default=1)
 parser.add_argument("-l", "--last-digit", action='store_true')
-parser.add_argument("-p", "--plop-data", action='store_true')
+parser.add_argument("-p", "--plot-data", action='store_true')
 
 args = parser.parse_args()
 
@@ -16,7 +16,7 @@ filename = args.data
 start_row = int(args.starting_row)
 collumn = int(args.collumn)
 last_digit = args.last_digit
-plop_data = args.plop_data
+plot_data = args.plot_data
 
 benfords_law = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
 
@@ -65,7 +65,7 @@ for i in range(len(d)):
         print(f"{i+1}: {percentage}%  --- {benfords_law[i]}%")
 print("Errechnet von " + str(value_sum) + " Datenwerten.")
 
-if plop_data:
+if plot_data:
     y = perc
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
