@@ -70,7 +70,10 @@ if __name__ == "__main__":
 
     filename = args.data
     start_row = int(args.starting_row)
-    ending_row = int(args.ending_row)
+    if args.ending_row == None:
+        ending_row = None
+    else:
+        ending_row = int(args.ending_row)
     collumn = int(args.collumn)
     last_digit = args.last_digit
     plot_data = args.plot_data
