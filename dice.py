@@ -1,20 +1,25 @@
+from random import randint
 import benfords_law
 import matplotlib.pyplot as plt
 
-def calculate_new_money(a):
-    numbers = [1]
+def roll():
+    res = 1
+    for _ in range(8):
+        res *= randint(1, 7)
+    
+    return res
 
-    for i in range(1, a):
-        new_n = numbers[i-1] * 1.2
-        numbers.append(new_n)
+def calculate():
+    numbers = [roll() for _ in range(10000)]
 
-    with open("data/geld_bank.csv", "w") as f:
+    with open("data/dice.csv", "w") as f:
         for n in numbers:
-            f.write(str(format(n, 'f')) + "\n")
+            f.write(str(n) + "\n")
+
 
 def plot(a, show_benford=False):
     benfords_law_dist = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
-    percentage, _, _ = benfords_law.calculate("geld_bank", 0, 0, a)
+    percentage, _, _ = benfords_law.calculate("dice", 0, 0, a)
 
     y = percentage
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -24,7 +29,7 @@ def plot(a, show_benford=False):
     plt.xlabel('Ziffer')
     plt.xticks(x)
     plt.ylabel('Prozent')
-    plt.title("Geld Bank / " + str(a) + " Tage")
+    plt.title("Würfel / " + str(a) + " Würfe")
     if show_benford: plt.plot(x, benfords_law_dist, "r--")
     plt.pause(.0000000000001)
 
@@ -34,7 +39,7 @@ if __name__ == "__main__":
 
     input("start animation: ")
 
-    for a in range(start, 201):
+    for a in range(start, 401, 4):
         plot(a)
 
     benfords_law_dist = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
@@ -44,8 +49,13 @@ if __name__ == "__main__":
     plt.plot(x, benfords_law_dist, "r--")
     plt.pause(.0001)
 
-    input("1000: ")
-    for a in range(200, 1001, 10):
+    input("2000: ")
+    for a in range(300, 2001, 20):
+        plot(a, True)
+    
+    
+    input("10000: ")
+    for a in range(2000, 10001, 50):
         plot(a, True)
 
     input("close: ")

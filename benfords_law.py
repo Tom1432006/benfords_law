@@ -56,7 +56,7 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
     return perc, value_sum, spalte
 
 if __name__ == "__main__":
-    # console values
+    #region console values
     parser = argparse.ArgumentParser(prog="benfords_law", description="shows how often a non 0 digit appears as the lead digit of a given dataset")
     parser.add_argument("-d", "--data", required=True)
     parser.add_argument("-s", "--starting_row", default=1)
@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--collumn", default=1)
     parser.add_argument("-l", "--last-digit", action='store_true')
     parser.add_argument("-p", "--plot-data", action='store_true')
+
     parser.add_argument("-i", "--ignore-bendford", action='store_true')
 
     args = parser.parse_args()
@@ -78,10 +79,11 @@ if __name__ == "__main__":
     last_digit = args.last_digit
     plot_data = args.plot_data
     ignore_bendford = args.ignore_bendford
+    #endregion
 
     percentage, value_sum, spalte_name = calculate(filename, start_row, collumn, ending_row, last_digit)
 
-    print("Spalte: " + spalte_name)
+    if spalte_name != "": print("Spalte: " + spalte_name)
 
     for i in range(len(percentage)):
         if last_digit:
