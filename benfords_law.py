@@ -13,49 +13,43 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
     with open("data/" + filename + ".csv") as csvF:
         reader = csv.reader(csvF)
         for row in reader:
-            if row != []: 
-                data.append(row)
+            if row != []: data.append(row)
 
     # save the distribution
     d = [0 for _ in range(9)]
     if digit != 1 or last_digit: d.append(0)
 
-    # get the first digit
+    # get the n digit
     nono_chars = ["-", "", "NA", "0"]
     i = 0
     spalte = ""
     for row in data:
-        if i == 0 and start_row >= 1:
-            spalte = row[collumn]
+        if i == 0 and start_row >= 1: spalte = row[collumn]
 
         if i >= start_row and row[collumn] not in nono_chars:
             # prepare the number to read the digits
             number = row[collumn].replace(",", "") # remove kommas
-            number = row[collumn].replace(".", "") # remove kommas
+            number = row[collumn].replace(".", "") # remove dots
             number = int(number)
-                
+            
+            # remove minus
             if number < 0: number *= -1
 
             if last_digit:
                 d[int(str(number)[-1])] += 1
-            else:
-                if len(str(number)) > digit-1:
-                    if digit == 1:
-                        d[int(str(number)[digit-1])-1] += 1
-                    else:
-                        d[int(str(number)[digit-1])] += 1
+            elif len(str(number)) > digit-1:
+                if digit == 1: d[int(str(number)[digit-1])-1] += 1
+                else:          d[int(str(number)[digit-1])] += 1
 
         i += 1
-        if end_row != None and i >= end_row:
-            break
+        if end_row != None and i >= end_row: break
 
     # calculate percentage
     value_sum = sum(d)
     perc = [0 for _ in range(9)]
     if digit != 1 or last_digit: perc.append(0)
 
-    if value_sum == 0:
-        exit("Es gibt dazu keine Daten")
+    if value_sum == 0: exit("Es gibt dazu keine Daten")
 
     for i in range(len(d)):
         percentage = round((d[i] / value_sum) * 100, 2)
@@ -98,27 +92,21 @@ if __name__ == "__main__":
     if spalte_name != "": print("Spalte: " + spalte_name)
 
     for i in range(len(percentage)):
-        if digit == 2:
-            print(f"{i}: {percentage[i]}%  --- {benfords_law_second[i]}%")
-        elif digit > 2 or last_digit:
-            print(f"{i}: {percentage[i]}%")
-        else:
-            print(f"{i+1}: {percentage[i]}%  --- {benfords_law[i]}%")
+        if digit == 2:                print(f"{i}: {percentage[i]}%  --- {benfords_law_second[i]}%")
+        elif digit > 2 or last_digit: print(f"{i}: {percentage[i]}%")
+        else:                         print(f"{i+1}: {percentage[i]}%  --- {benfords_law[i]}%")
+
     print("Errechnet aus " + str(value_sum) + " Datenwerten.")
 
     if plot_data:
-        y = percentage
         if digit == 1 and not last_digit:
             x = np.linspace(1, 9, 100)
+            for i in range(1,10):
+                plt.bar(i, percentage[i-1], width=.8, color="#1f77b4")
         else:
             x = [i for i in range(0, 10)]
-        
-        if digit == 1 and not last_digit:
-            for i in range(1,10):
-                plt.bar(i, y[i-1], width=.8, color="#1f77b4")
-        else:
             for i in range(0,10):
-                plt.bar(i, y[i], width=.8, color="#1f77b4")
+                plt.bar(i, percentage[i], width=.8, color="#1f77b4")
 
         if not last_digit and not ignore_bendford and digit == 1:
             plt.plot(x, np.log10(1+(1/x))*100, "r--")
@@ -128,8 +116,6 @@ if __name__ == "__main__":
         plt.xlabel('Ziffer')
         plt.xticks([x for x in range(0,10)])
         plt.ylabel('Prozent')
-        if start_row > 0:
-            plt.title(filename + " / " + spalte_name)
-        else:
-            plt.title(filename)
+        if start_row > 0: plt.title(filename + " / " + spalte_name)
+        else:             plt.title(filename)
         plt.show()
