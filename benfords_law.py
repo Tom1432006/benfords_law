@@ -103,10 +103,13 @@ if __name__ == "__main__":
     if last_digit: digit = 1
     if last_digit: amount = 1
     #endregion
+    
+    # calculate the min and max of the possible combinations
     min = int(math.pow(10, amount-1))
     if digit != 1 or last_digit: min = 0
     max = int(math.pow(10, amount))
 
+    # perform the main calculation
     percentage, value_sum, spalte_name = calculate(filename, start_row, collumn, ending_row, last_digit, digit, amount)
 
     if spalte_name != "": print("Spalte: " + spalte_name)
