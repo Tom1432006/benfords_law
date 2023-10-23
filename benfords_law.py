@@ -25,15 +25,11 @@ def check_data(filename, start_row = 1, collumn = 1, end_row = None, last_digit 
         exit("In dieser Spalte gibt es keine Zahlen")
 
 def get_probability(x, digit):
-    if digit == 1:
-        return np.log10(1+1/x)*100
-
-    # this formula only works for digits grater than 1
     # variables for the formula
     lower = int(math.pow(10, digit-2))
     upper = int(math.pow(10, digit-1)-1)
 
-    return sum(np.log10(1+(1/(10*k+x)))*100 for k in range(lower,  upper+1))
+    return sum(np.log10(1+(1/(10*k+x))) for k in range(lower,  upper+1))*100
 
 def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit = False, digit=1, amount=1):
     check_data(filename, start_row, collumn, end_row, last_digit, digit, amount)
