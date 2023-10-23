@@ -137,8 +137,9 @@ if __name__ == "__main__":
     # generate benfords law
     benfords_law = [0 for _ in range(max)]
     start = 1 if digit == 1 else 0
-    for x in range(min, max):
-        benfords_law[x] = round(get_probability(x, digit), 2)
+    if not last_digit:
+        for x in range(min, max):
+            benfords_law[x] = round(get_probability(x, digit), 2)
 
     if amount == 1:
         for i in range(min, max):
