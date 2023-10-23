@@ -3,6 +3,26 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import os
+
+def check_data(filename, start_row = 1, collumn = 1, end_row = None, last_digit = False, digit=1, amount=1):
+    if not os.path.exists("data/" + filename + ".csv"):
+        exit("Diesen Datensatz gibt es nicht!")
+
+    # load the data 
+    data = []
+    with open("data/" + filename + ".csv") as csvF:
+        reader = csv.reader(csvF)
+        for row in reader:
+            if row != []: data.append(row)
+
+    if len(data[0]) < collumn:
+        exit("Diese Spalte gibt es nicht")
+
+    try:
+        int(data[start_row][collumn])
+    except:
+        exit("In dieser Spalte gibt es keine Zahlen")
 
 def get_probability(x, digit):
     if digit == 1:
@@ -16,6 +36,8 @@ def get_probability(x, digit):
     return sum(np.log10(1+(1/(10*k+x)))*100 for k in range(lower,  upper+1))
 
 def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit = False, digit=1, amount=1):
+    check_data(filename, start_row, collumn, end_row, last_digit, digit, amount)
+
     # load the data 
     data = []
     with open("data/" + filename + ".csv") as csvF:
@@ -25,7 +47,6 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
 
     # save the distribution
     min = 0
-    if digit == 1 and amount == 1 and not last_digit: min += 1
     max = int(math.pow(10, amount))
     d = [0 for _ in range(min, max)]
 
@@ -49,13 +70,13 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
 
             if amount > 1:
                 if number >= max:
-                    d[int(str(number)[digit-1:amount+(digit-1)])-1] += 1
+                    if last_digit:
+                        d[int(str(number)[-amount:])] += 1
+                    else:
+                        d[int(str(number)[digit-1:amount+(digit-1)])] += 1
             else:
-                if last_digit:
-                    d[int(str(number)[-1])] += 1
-                elif len(str(number)) > digit-1:
-                    if digit == 1: d[int(str(number)[digit-1])-1] += 1
-                    else:          d[int(str(number)[digit-1])] += 1
+                if last_digit: d[int(str(number)[-1])] += 1
+                elif len(str(number)) > digit-1: d[int(str(number)[digit-1])] += 1
 
         i += 1
         if end_row != None and i >= end_row: break
@@ -101,7 +122,6 @@ if __name__ == "__main__":
     ignore_bendford = args.ignore_bendford
 
     if last_digit: digit = 1
-    if last_digit: amount = 1
     #endregion
     
     # calculate the min and max of the possible combinations
@@ -111,34 +131,34 @@ if __name__ == "__main__":
 
     # perform the main calculation
     percentage, value_sum, spalte_name = calculate(filename, start_row, collumn, ending_row, last_digit, digit, amount)
-
+    
     if spalte_name != "": print("Spalte: " + spalte_name)
 
     # generate benfords law
-    benfords_law = []
+    benfords_law = [0 for _ in range(max)]
     start = 1 if digit == 1 else 0
-    for x in range(start, 10):
-        benfords_law.append(round(get_probability(x, digit), 2))
+    for x in range(min, max):
+        benfords_law[x] = round(get_probability(x, digit), 2)
 
     if amount == 1:
-        for i in range(len(percentage)-1):
-            if digit >= 2:   print(f"{i}: {percentage[i]}%  --- {benfords_law[i]}%")
-            elif last_digit: print(f"{i}: {percentage[i]}%")
-            else:            print(f"{i+1}: {percentage[i]}%  --- {benfords_law[i]}%")
+        for i in range(min, max):
+            if last_digit: print(f"{i}: {percentage[i]}%")
+            else:          print(f"{i}: {percentage[i]}%  --- {benfords_law[i]}%")
 
+    if not last_digit:
+        standartabweichung = round(math.sqrt((1/(max-1-min)) * math.pow(sum([abs(percentage[i] - benfords_law[i]) for i in range(min, max-1)]), 2)), 3)
+        print("Standartabweichung: " + str(standartabweichung))
+        
     print("Errechnet aus " + str(value_sum) + " Datenwerten.")
 
+    width = .8
+    if amount > 1: width = 1
     if plot_data:
-        if digit == 1 and not last_digit:
-            x = np.linspace(min, max-1, 100)
-            for i in range(min,max):
-                plt.bar(i, percentage[i-1], width=.8, color="#1f77b4")
-        else:
-            x = np.linspace(min, max-1, 100)
-            for i in range(min,max):
-                plt.bar(i, percentage[i], width=.8, color="#1f77b4")
+        x = np.linspace(min, max-1, 100)
+        for i in range(min,max):
+            plt.bar(i, percentage[i], width=width, color="#1f77b4")
 
-        if (digit == 1 or amount == 1) and not ignore_bendford:
+        if (digit == 1 or amount == 1) and not ignore_bendford and not last_digit:
             plt.plot(x, get_probability(x, digit), "r--")
 
         plt.xlabel('Ziffer')

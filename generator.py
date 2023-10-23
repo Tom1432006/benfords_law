@@ -1,4 +1,4 @@
-numbers = [3, 9]
+numbers = [3, 1]
 
 for i in range(2, 10000):
     numbers.append(numbers[i-1] + numbers[i-2])
