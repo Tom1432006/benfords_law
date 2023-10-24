@@ -54,17 +54,13 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
             number = number.replace(",", "") # remove kommas
             number = number.replace(".", "") # remove dots
             number.lstrip("0") # remove leading zeros
-            number = int(number)
-            
-            # remove minus
-            if number < 0: number *= -1
+            number.lstrip("-") # remove sign
 
             if amount > 1:
-                if number >= max:
-                    if last_digit:
-                        d[int(str(number)[-amount:])] += 1
-                    else:
-                        d[int(str(number)[digit-1:amount+(digit-1)])] += 1
+                if last_digit:
+                    d[int(str(number)[-amount:])] += 1
+                elif math.pow(10, len(str(number))) >= max:
+                    d[int(str(number)[digit-1:amount+(digit-1)])] += 1
             else:
                 if last_digit: d[int(str(number)[-1])] += 1
                 elif len(str(number)) > digit-1: d[int(str(number)[digit-1])] += 1
