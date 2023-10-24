@@ -7,7 +7,7 @@ import os
 
 def check_data(filename, start_row = 1, collumn = 1, end_row = None, last_digit = False, digit=1, amount=1):
     if not os.path.exists("data/" + filename + ".csv"):
-        exit("Diesen Datensatz gibt es nicht!")
+        exit("Den Datensatz "+filename+".csv gibt es nicht!")
 
     # load the data 
     data = []
