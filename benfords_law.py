@@ -19,11 +19,6 @@ def check_data(filename, start_row = 1, collumn = 1, end_row = None, last_digit 
     if len(data[0]) < collumn:
         exit("Diese Spalte gibt es nicht")
 
-    try:
-        int(data[start_row][collumn])
-    except:
-        exit("In dieser Spalte gibt es keine Zahlen")
-
 def get_probability(x, digit):
     # variables for the formula
     lower = int(math.pow(10, digit-2))
@@ -117,7 +112,9 @@ if __name__ == "__main__":
     amount = int(args.amount)
     ignore_bendford = args.ignore_bendford
 
-    if last_digit: digit = 1
+    if last_digit: 
+        digit = 1
+        print("-d wurde zurückgesetzt")
     #endregion
     
     # calculate the min and max of the possible combinations
