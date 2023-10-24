@@ -19,12 +19,12 @@ def check_data(filename, start_row = 1, collumn = 1, end_row = None, last_digit 
     if len(data[0]) < collumn:
         exit("Diese Spalte gibt es nicht")
 
-def get_probability(x, digit):
+def get_probability(x, digit, step):
     # variables for the formula
     lower = int(math.pow(10, digit-2))
     upper = int(math.pow(10, digit-1)-1)
 
-    return sum(np.log10(1+(1/(10*k+x))) for k in range(lower,  upper+1))*100
+    return sum(np.log10(1+(1/(10*k+x))) for k in range(lower,  upper+1))*100*step
 
 def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit = False, digit=1, amount=1):
     check_data(filename, start_row, collumn, end_row, last_digit, digit, amount)
@@ -59,7 +59,7 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
             if amount > 1:
                 if last_digit:
                     d[int(str(number)[-amount:])] += 1
-                elif math.pow(10, len(str(number))) >= max:
+                elif str(number)[digit-1:amount+(digit-1)] != "":
                     d[int(str(number)[digit-1:amount+(digit-1)])] += 1
             else:
                 if last_digit: d[int(str(number)[-1])] += 1
@@ -82,7 +82,7 @@ def calculate(filename, start_row = 1, collumn = 1, end_row = None, last_digit =
     return perc, value_sum, spalte
 
 if __name__ == "__main__":
-    #region console values
+    #region console arguments
     parser = argparse.ArgumentParser(prog="benfords_law", description="shows how often a non 0 digit appears as the lead digit of a given dataset")
     parser.add_argument("-d", "--data", required=True)
     parser.add_argument("-s", "--starting_row", default=1)
@@ -90,8 +90,9 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--collumn", default=1)
     parser.add_argument("-l", "--last-digit", action='store_true')
     parser.add_argument("-p", "--plot-data", action='store_true')
-    parser.add_argument("-t", "--digit", default=1)
+    parser.add_argument("-z", "--digit", default=1)
     parser.add_argument("-a", "--amount", default=1)
+    parser.add_argument("-t", "--step", default=1)
 
     parser.add_argument("-i", "--ignore-bendford", action='store_true')
 
@@ -106,9 +107,10 @@ if __name__ == "__main__":
     plot_data = args.plot_data
     digit = int(args.digit)
     amount = int(args.amount)
+    step = int(args.step)
     ignore_bendford = args.ignore_bendford
 
-    if last_digit: 
+    if last_digit and digit != 1: 
         digit = 1
         print("-d wurde zurückgesetzt")
     #endregion
@@ -128,32 +130,45 @@ if __name__ == "__main__":
     start = 1 if digit == 1 else 0
     if not last_digit:
         for x in range(min, max):
-            benfords_law[x] = round(get_probability(x, digit), 2)
+            benfords_law[x] = round(get_probability(x, digit, step), 2)
 
+    # print out the percentage if the amount is one
     if amount == 1:
         for i in range(min, max):
             if last_digit: print(f"{i}: {percentage[i]}%")
             else:          print(f"{i}: {percentage[i]}%  --- {benfords_law[i]}%")
 
-    if not last_digit:
+    # standartabweichung von benfords law
+    if not last_digit and (digit == 1 or amount == 1):
         standartabweichung = round(math.sqrt((1/(max-1-min)) * math.pow(sum([abs(percentage[i] - benfords_law[i]) for i in range(min, max-1)]), 2)), 3)
         print("Standartabweichung: " + str(standartabweichung))
         
     print("Errechnet aus " + str(value_sum) + " Datenwerten.")
 
-    width = .8
-    if amount > 1: width = 1
     if plot_data:
-        x = np.linspace(min, max-1, 100)
-        for i in range(min,max):
-            plt.bar(i, percentage[i], width=width, color="#1f77b4")
+        # settings
+        align = "center"
+        if step > 1: align = "edge"
+        width = .8
+        if amount > 1: width = 1
+        
+        # plot the data
+        for i in range(min, max, step):
+            plt.bar(i, sum([percentage[x] for x in range(i, i+step)]), width=width*step, color="#1f77b4", align=align)
 
+        # plot benfords_law or the mean value
         if (digit == 1 or amount == 1) and not ignore_bendford and not last_digit:
-            plt.plot(x, get_probability(x, digit), "r--")
+            x = np.linspace(min, max-1, 100)
+            plt.plot(x, get_probability(x, digit, step), "r--")
+        elif not ignore_bendford:
+            plt.plot([(100/(max-min))*step for _ in range(min, max)], "g--")
 
-        plt.xlabel('Ziffer')
+        # label and title
+        plt.xlabel('Ziffer')    
         plt.xticks([x for x in range(min,max, math.ceil(max/20))])
         plt.ylabel('Prozent')
         if start_row > 0: plt.title(filename + " / " + spalte_name)
         else:             plt.title(filename)
+
+        # showtime
         plt.show()
