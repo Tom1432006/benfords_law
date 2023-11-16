@@ -16,6 +16,7 @@ def plot(a, show_benford=False):
     benfords_law_dist = [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6]
     percentage, _, _ = benfords_law.calculate("geld_bank", 0, 0, a)
 
+    percentage.pop(0)
     y = percentage
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
