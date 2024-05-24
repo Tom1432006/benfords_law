@@ -1,0 +1,6 @@
+https://data.humdata.org/dataset/unfpa-world-population-data
+https://covidtracking.com/data/download
+https://zenodo.org/record/4770937
+https://www.kaggle.com/datasets/rakeshsahni/data-set-for-prove-benfords-law-power-of-one
+https://www.kaggle.com/datasets/davidcariboo/player-scores?select=player_valuations.csv
+https://www.kaggle.com/datasets/ander289386/cars-germany/
