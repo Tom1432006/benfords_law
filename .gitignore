@@ -1,13 +1,2 @@
-data/all-states-history_covid.csv
-data/athlete_events.csv
-data/autoscout24-germany-dataset.csv
-data/california-history.csv
-data/country_area.csv
-data/data.zip
-data/expenses.csv
-data/player_football_valuations.csv
-data/us_county_data.csv
-data/votes_chicago.csv
-data/weather_prediction_dataset.csv
-data/world_population_2019.csv
 __pycache__
+.gitignore
