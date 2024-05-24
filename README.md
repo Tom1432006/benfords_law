@@ -1,6 +1,6 @@
 # Benfords Gesetz
 
-Benfords Gesetz ist ein Gesetz zur relativen Häufigkeit von Ziffern (0-9) als Anfangsziffer. Es kann benutzt werden um Betrug in Datensetzen zu finden. Wenn zum Beispiel ein großer Datensatz von Finanzdaten nicht diesem Gesetz folgt, kann Betrug vorliegen, man sollte sich den Datensatz aber immer nochmal selber anschauen und den Grund für die Abweichung herausfinden. [https://de.wikipedia.org/wiki/Benfordsches_Gesetz](Link) zu Wikipedia.
+Benfords Gesetz ist ein Gesetz zur relativen Häufigkeit von Ziffern (0-9) als Anfangsziffer. Es kann benutzt werden um Betrug in Datensetzen zu finden. Wenn zum Beispiel ein großer Datensatz von Finanzdaten nicht diesem Gesetz folgt, kann Betrug vorliegen, man sollte sich den Datensatz aber immer nochmal selber anschauen und den Grund für die Abweichung herausfinden. [Link zu Wikipedia](https://de.wikipedia.org/wiki/Benfordsches_Gesetz).
 
 Dies ist ein Pytohnscript zur Visualisierung von Benfords Gesetz. 
 
